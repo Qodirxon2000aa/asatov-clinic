@@ -1,5 +1,6 @@
 import moment from 'moment'
 import QRCode from 'qrcode'
+import Images from '../img/logo.png'
 
 export const printReceipt = async (services, totalAmount) => {
   const receiptId = Date.now().toString()
@@ -21,47 +22,67 @@ export const printReceipt = async (services, totalAmount) => {
           <style>
             @page {
               margin: 0;
-              size: 80mm 297mm;
+              size: 80mm auto; /* Width fixed, height auto to fit content */
+            }
+            html, body {
+              margin: 0;
+              padding: 0;
+              width: 270px; /* Matches 80mm at typical DPI */
+              box-sizing: border-box;
             }
             body {
               font-family: Arial;
-              width: 270px;
-              padding: 10px;
-              margin: 0 auto;
+              padding: 5px; /* Reduced padding */
+              min-height: auto; /* Avoid unnecessary height */
+              display: flex;
+              flex-direction: column;
+              align-items: center;
             }
             .receipt {
               text-align: center;
+              width: 100%;
+              font-size: 12px; /* Smaller font for compactness */
+            }
+            .logo {
+              margin: 5px 0; /* Reduced margin */
             }
             .service-item {
               display: flex;
               justify-content: space-between;
-              margin: 5px 0;
+              margin: 2px 0; /* Reduced spacing */
             }
             .total {
               border-top: 1px dashed black;
-              padding-top: 10px;
-              margin-top: 10px;
+              padding-top: 5px;
+              margin-top: 5px;
               display: flex;
               justify-content: space-between;
             }
             .qr-code {
-              margin: 15px 0;
+              margin: 5px 0 10px 0; /* 10px bottom space as requested */
             }
-            .footer-space {
-              height: 60px;
+            h3 {
+              margin: 5px 0; /* Reduced margin */
+              font-size: 14px; /* Smaller header */
+            }
+            div {
+              margin: 2px 0; /* Reduced general margins */
             }
           </style>
         </head>
         <body>
           <div class="receipt">
-            <h3>Clinic Check</h3>
+            <div class="logo">
+              <img src="${Images}" width="80" height="auto" alt="Asatov Clinic Logo"/>
+            </div>
+            <h3>Asatov Clinic Check</h3>
             
             <div>
               <div>Sana: ${moment().format('DD/MM/YYYY')}</div>
               <div>Vaqt: ${moment().format('HH:mm:ss')}</div>
             </div>
 
-            <div style="margin: 15px 0;">
+            <div>
               ${services.map(service => `
                 <div class="service-item">
                   <span>${service.name}</span>
@@ -76,10 +97,8 @@ export const printReceipt = async (services, totalAmount) => {
             </div>
 
             <div class="qr-code">
-              <img src="${qrCodeUrl}" width="150" height="150"/>
+              <img src="${qrCodeUrl}" width="120" height="120"/>
             </div>
-              <br/><br/><br/>
-            <div class="footer-space"></div>
           </div>
         </body>
       </html>

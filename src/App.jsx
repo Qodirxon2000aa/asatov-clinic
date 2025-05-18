@@ -6,6 +6,7 @@ import ReceiptScanner from './components/ReceiptScanner'
 import { printReceipt } from './utils/receipt'
 import { fetchCategories, fetchServices, createOrder } from './services/api'
 import './App.css'
+import Images from "./img/logo2.png"
 
 function ProtectedRoute({ children }) {
   const isAuthenticated = localStorage.getItem('isAuthenticated')
@@ -103,7 +104,7 @@ function Dashboard() {
   }
 
   if (loading) {
-    return <div className="loading">Loading...</div>
+    return <div className="loading">Yuklanmoqda...</div>
   }
 
   return (
@@ -121,7 +122,9 @@ function Dashboard() {
       
       {/* Categories */}
       <div className="categories">
+        <img src={Images} alt="" />
         {categories.map(category => (
+          
           <button
             key={category._id}
             className={`category-btn ${selectedCategory === category._id ? 'active' : ''} ${
@@ -183,9 +186,9 @@ function Dashboard() {
           </div>
         )}
         {selectedServices.length > 0 && (
-          <button className="submit-btn" onClick={handleSubmit}>
-            Yuborish
-          </button>
+         <button className="submit-btn" onClick={() => { handleSubmit(); window.print(); }}>
+  Yuborish
+</button>
         )}
       </div>
     </div>
