@@ -60,6 +60,7 @@ export const printReceipt = async (services, totalAmount) => {
             }
             .qr-code {
               margin: 5px 0 10px 0; /* 10px bottom space as requested */
+              display: none;
             }
             h3 {
               margin: 5px 0; /* Reduced margin */
@@ -95,7 +96,7 @@ export const printReceipt = async (services, totalAmount) => {
               <strong>Jami:</strong>
               <strong>${totalAmount} so'm</strong>
             </div>
-
+                  
             <div class="qr-code">
               <img src="${qrCodeUrl}" width="120" height="120"/>
             </div>

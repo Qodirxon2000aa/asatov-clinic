@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Login.css'
+import Images from "../img/logo.png"
 
 function Login() {
   const [username, setUsername] = useState('')
@@ -10,7 +11,7 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (username === 'clinic' && password === 'clinic') {
+    if (username === '1' && password === '1') {
       localStorage.setItem('isAuthenticated', 'true')
       navigate('/')
     } else {
@@ -21,20 +22,18 @@ function Login() {
   return (
     <div className="login-container">
       <div className="login-box">
-        <div className="cart-icon">
-          <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-            <path d="M3 6h18" />
-            <path d="M16 10a4 4 0 01-8 0" />
-          </svg>
+
+        <div className="imagess">
+          <img src={Images} alt="" />
         </div>
+       
         
         <form onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
           <div className="input-group">
             <input
               type="text"
-              placeholder="USERNAME"
+              placeholder="Login"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -43,13 +42,13 @@ function Login() {
           <div className="input-group">
             <input
               type="password"
-              placeholder="PASSWORD"
+              placeholder="Parol"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           
-          <button type="submit">LOGIN</button>
+          <button type="submit">Kirish</button>
         </form>
       </div>
     </div>

@@ -1,27 +1,27 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { Alert } from 'antd';
-import Login from './components/Login';
-import ReceiptScanner from './components/ReceiptScanner';
-import { printReceipt } from './utils/receipt';
-import { fetchCategories, fetchServices, createOrder } from './services/api';
-import './App.css';
-import Images from "./img/logo2.png";
+import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { Alert } from 'antd'
+import Login from './components/Login'
+import ReceiptScanner from './components/ReceiptScanner'
+import { printReceipt } from './utils/receipt'
+import { fetchCategories, fetchServices, createOrder } from './services/api'
+import './App.css'
+import Images from "./img/logo2.png"
 
 function ProtectedRoute({ children }) {
-  const isAuthenticated = localStorage.getItem('isAuthenticated');
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  const isAuthenticated = localStorage.getItem('isAuthenticated')
+  return isAuthenticated ? children : <Navigate to="/login" />
 }
 
 function Dashboard() {
-  const navigate = useNavigate();
-  const [categories, setCategories] = useState([]);
-  const [allServices, setAllServices] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate()
+  const [categories, setCategories] = useState([])
+  const [allServices, setAllServices] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedServices, setSelectedServices] = useState([])
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [totalAmount, setTotalAmount] = useState(0)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadData = async () => {
@@ -29,32 +29,32 @@ function Dashboard() {
         const [categoriesData, servicesData] = await Promise.all([
           fetchCategories(),
           fetchServices()
-        ]);
-        setCategories(categoriesData);
-        setAllServices(servicesData);
-        setSelectedCategory(categoriesData[0]?._id);
-        setLoading(false);
+        ])
+        setCategories(categoriesData)
+        setAllServices(servicesData)  // Services are being set here
+        setSelectedCategory(categoriesData[0]?._id)
+        setLoading(false)
       } catch (error) {
-        console.error('Data loading error:', error);
-        setLoading(false);
+        console.error('Data loading error:', error)
+        setLoading(false)
       }
-    };
-    loadData();
-  }, []);
+    }
+    loadData()
+  }, [])
 
   const handleServiceClick = (service) => {
     if (!selectedServices.find(s => s._id === service._id)) {
-      setSelectedServices([...selectedServices, service]);
+      setSelectedServices([...selectedServices, service])
     }
-  };
+  }
 
   const handleRemoveService = (serviceId) => {
-    setSelectedServices(selectedServices.filter(s => s._id !== serviceId));
-  };
+    setSelectedServices(selectedServices.filter(s => s._id !== serviceId))
+  }
 
   const handleSubmit = async () => {
     if (selectedServices.length > 0) {
-      const total = selectedServices.reduce((sum, service) => sum + parseInt(service.price), 0);
+      const total = selectedServices.reduce((sum, service) => sum + parseInt(service.price), 0)
       
       try {
         const orderData = {
@@ -65,45 +65,46 @@ function Dashboard() {
             price: service.price
           })),
           totalAmount: total
-        };
+        }
 
-        await createOrder(orderData);
+        await createOrder(orderData)
         
-        // Print receipt using the custom printReceipt function
-        const printed = await printReceipt(selectedServices, total);
+        // Print receipt
+        const printed = await printReceipt(selectedServices, total)
         
         if (printed) {
-          setTotalAmount(total);
-          setSelectedServices([]);
-          setShowSuccess(true);
+          setTotalAmount(total)
+          setSelectedServices([])
+          setShowSuccess(true)
           setTimeout(() => {
-            setShowSuccess(false);
-          }, 3000);
+            setShowSuccess(false)
+          }, 3000)
         }
       } catch (error) {
-        console.error('Order creation failed:', error);
-        alert('Buyurtma yuborishda xatolik');
+        console.error('Order creation failed:', error)
+        alert('Buyurtma yuborishda xatolik')
       }
     }
-  };
+  }
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    navigate('/login');
-  };
+    localStorage.removeItem('isAuthenticated')
+    navigate('/login')
+  }
 
   const handleCategoryClick = (categoryId) => {
+    // Only allow category change if no services are selected
     if (selectedServices.length === 0) {
-      setSelectedCategory(categoryId);
+      setSelectedCategory(categoryId)
     }
-  };
+  }
 
   const handleClearServices = () => {
-    setSelectedServices([]);
-  };
+    setSelectedServices([])
+  }
 
   if (loading) {
-    return <div className="loading">Yuklanmoqda...</div>;
+    return <div className="loading">Yuklanmoqda...</div>
   }
 
   return (
@@ -123,6 +124,7 @@ function Dashboard() {
       <div className="categories">
         <img src={Images} alt="" />
         {categories.map(category => (
+          
           <button
             key={category._id}
             className={`category-btn ${selectedCategory === category._id ? 'active' : ''} ${
@@ -173,14 +175,14 @@ function Dashboard() {
       <div className="selected-services">
         <h2>Tanlangan Xizmatlar:</h2>
         {selectedServices.map(service => (
-          <div key={service._id} className="selected-service">
-            <span>{service.name} - {service.price} so'm</span>
-            <button onClick={() => handleRemoveService(service._id)}>×</button>
+          <div key={service.id} className="selected-service">
+            <span>{service.name} - {service.price} so`m</span>
+            <button onClick={() => handleRemoveService(service.id)}>×</button>
           </div>
         ))}
         {selectedServices.length > 0 && (
           <div className="total">
-            Jami: {selectedServices.reduce((sum, service) => sum + parseInt(service.price), 0)} so'm
+            Jami: {selectedServices.reduce((sum, service) => sum + parseInt(service.price), 0)} so`m
           </div>
         )}
         {selectedServices.length > 0 && (
@@ -190,7 +192,7 @@ function Dashboard() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
 function App() {
@@ -214,7 +216,7 @@ function App() {
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App
